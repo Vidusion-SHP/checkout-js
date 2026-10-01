@@ -35,6 +35,11 @@ const LOADER_LIBRARY_NAME = 'checkoutLoader';
 const PRELOAD_ASSETS = ['billing', 'shipping', 'payment'];
 // Same as http-server's default, so storefronts pointed at `dev:server` keep working.
 const DEV_SERVER_PORT = 8080;
+// SHP: dev styles go to the top of <head>, like production, so theme checkout styles still win.
+const SHP_DEV_STYLE_LOADER = {
+    loader: 'style-loader',
+    options: { insert: require.resolve('./scripts/webpack/shp-dev-style-insert') },
+};
 
 const eventEmitter = new EventEmitter();
 
@@ -249,7 +254,7 @@ function appConfig(options, argv) {
                     {
                         test: /\.css$/,
                         use: [
-                            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+                            isProduction ? MiniCssExtractPlugin.loader : SHP_DEV_STYLE_LOADER,
                             'css-loader',
                         ],
                         sideEffects: true,
@@ -257,7 +262,7 @@ function appConfig(options, argv) {
                     {
                         test: /\.scss$/,
                         use: [
-                            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+                            isProduction ? MiniCssExtractPlugin.loader : SHP_DEV_STYLE_LOADER,
                             'css-loader',
                             {
                                 loader: 'sass-loader',

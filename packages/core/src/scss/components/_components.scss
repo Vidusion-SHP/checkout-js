@@ -91,6 +91,9 @@
 // Checkout Steps
 @import "checkout/checkoutSteps/component";
 
+// SHP multi-step checkout (Super Hairpieces fork)
+@import "checkout/shpMultiStep/component";
+
 // Checkout Customer Suggestion
 @import "checkout/checkoutSuggestion/component";
 
@@ -141,3 +144,6 @@
 
 // (multi) Coupon
 @import "checkout/coupon/component";
+
+// SHP clean modern theme (Super Hairpieces fork). Last, so it follows every component above.
+@import "checkout/shpTheme/component";

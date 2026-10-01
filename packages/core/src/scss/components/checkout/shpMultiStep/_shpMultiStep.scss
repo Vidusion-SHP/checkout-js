@@ -1,0 +1,104 @@
+// =============================================================================
+// SHP MULTI-STEP CHECKOUT (Super Hairpieces fork)
+//
+// One step at a time: a step bar on top, the finished steps as one-line recaps
+// (their existing summary and Edit button), the open step under them, and the
+// upcoming steps hidden. Markup: CheckoutProgress.tsx, plus the `shp-multistep`
+// class (CheckoutPage.tsx) and `checkout-step--complete` (CheckoutStep.tsx).
+// The theme's optimized-checkout.scss can restyle all of this.
+// =============================================================================
+
+// Step bar
+// -----------------------------------------------------------------------------
+.shp-progress {
+    // Clear space under the store header: one line on phones, two from tablet width up
+    margin: spacing("single") 0 spacing("single");
+
+    @include breakpoint("medium") {
+        margin-top: spacing("double");
+        padding-right: (spacing("double") + spacing("double")); // lines up with .checkout-steps
+    }
+}
+
+.shp-progress-list {
+    display: flex;
+    gap: spacing("half");
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.shp-progress-step {
+    align-items: center;
+    border-bottom: 3px solid color("greys", "light");
+    color: color("greys", "dark");
+    display: flex;
+    flex: 1 1 0;
+    font-size: fontSize("tiny");
+    gap: spacing("quarter");
+    min-width: 0;
+    padding-bottom: spacing("third");
+
+    &.is-complete {
+        border-bottom-color: color("greys", "darkest");
+        color: color("greys", "darkest");
+    }
+
+    &.is-current {
+        border-bottom-color: color("primary");
+        color: color("greys", "darkest");
+        font-weight: fontWeight("bold");
+    }
+
+    @include breakpoint("small") {
+        font-size: fontSize("base");
+    }
+}
+
+.shp-progress-number {
+    align-items: center;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    display: inline-flex;
+    flex: none;
+    font-size: fontSize("smallest");
+    height: 1.6em;
+    justify-content: center;
+    width: 1.6em;
+
+    .is-current & {
+        background: color("primary");
+        border-color: color("primary");
+        color: color("whites", "bright");
+    }
+}
+
+.shp-progress-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.shp-progress-label--link {
+    background: none;
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+// Steps: open step plus recaps of the finished ones
+// -----------------------------------------------------------------------------
+.checkout-steps.shp-multistep {
+    // Upcoming steps stay mounted (as upstream) but are not shown. That includes steps after
+    // the open one that BigCommerce already counts as complete (e.g. a saved billing address).
+    > .checkout-step:not(.checkout-step--current, .checkout-step--complete),
+    > .checkout-step--current ~ .checkout-step {
+        display: none;
+    }
+
+    // How the finished-step recaps look is set in shpTheme/_shpTheme.scss.
+}

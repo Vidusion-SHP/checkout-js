@@ -174,4 +174,17 @@ describe('CheckoutStep', () => {
 
         expect(window.scrollTo).not.toHaveBeenCalled();
     });
+
+    it('marks a finished step that is not open as complete, for the SHP multi-step layout', () => {
+        render(<CheckoutStep {...defaultProps} isActive={false} isComplete />);
+
+        expect(screen.getByRole('listitem')).toHaveClass('checkout-step--complete');
+    });
+
+    it('does not mark the open step as complete, even when it is finished', () => {
+        render(<CheckoutStep {...defaultProps} isComplete />);
+
+        expect(screen.getByRole('listitem')).toHaveClass('checkout-step--current');
+        expect(screen.getByRole('listitem')).not.toHaveClass('checkout-step--complete');
+    });
 });

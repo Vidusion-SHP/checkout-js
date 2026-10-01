@@ -1,0 +1,51 @@
+# Super Hairpieces custom checkout: lint, type-check, test what changed, then build the loader.
+# Each run attaches the built files as the "checkout-dist-<sha>" artifact. To ship a build, upload
+# the whole artifact to each store's WebDAV /content/checkout/ folder and point
+# Settings > Advanced > Checkout > Script URL at webdav:checkout/auto-loader-<version>.js.
+# dist/ in the repo is upstream's release build; this workflow never commits to it.
+name: SHP build
+
+on:
+  push:
+    branches: [master, 'shp/**']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: shp-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # nx affected compares against master
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint and type-check
+        run: |
+          npm run lint
+          npm run typecheck
+
+      - name: Test the projects this change touches
+        run: |
+          git fetch --no-tags origin master
+          npx nx affected --target=test --base=origin/master --head=HEAD -- --ci
+
+      - name: Build
+        run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: checkout-dist-${{ github.sha }}
+          path: dist/
+          retention-days: 30

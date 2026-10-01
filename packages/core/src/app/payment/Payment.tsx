@@ -80,6 +80,12 @@ import {
     isErrorWithType,
 } from '../common/error';
 import { EMPTY_ARRAY } from '../common/utility';
+import {
+    applyShpPaymentRules,
+    type ShpEligibilityKey,
+    type ShpPaymentNotice,
+    ShpPaymentNotices,
+} from '../shp';
 import { TermsConditionsType } from '../termsConditions';
 
 import {
@@ -110,6 +116,8 @@ export interface PaymentProps {
     isBillingSameAsShipping?: boolean;
     isEmbedded?: boolean;
     isUsingMultiShipping?: boolean;
+    /** SHP: gated payment methods this shopper qualifies for (from useShpEligibility). */
+    shpEligible?: ShpEligibilityKey[];
     checkEmbeddedSupport?(methodIds: string[]): void; // TODO: We're currently doing this check in multiple places, perhaps we should move it up so this check get be done in a single place instead.
     onBillingSameAsShippingChange?(isBillingSameAsShipping: boolean): void;
     onCartChangedError?(): void;
@@ -146,6 +154,7 @@ interface WithCheckoutPaymentProps {
     payments?: CheckoutPayment[];
     shouldExecuteSpamCheck: boolean;
     shouldLocaliseErrorMessages: boolean;
+    shpPaymentNotices?: ShpPaymentNotice[];
     submitOrderError?: Error;
     termsConditionsText?: string;
     termsConditionsUrl?: string;
@@ -958,6 +967,7 @@ const Payment = (
                 <LoadingOverlay
                     isLoading={isBillingFormBusy || isReloadingPaymentMethods || isPlacingOrder}
                 >
+                    <ShpPaymentNotices notices={props.shpPaymentNotices} />
                     <PaymentForm
                         additionalField={props.capabilities.payment.additionalField}
                         availableStoreCredit={props.availableStoreCredit}
@@ -1017,7 +1027,7 @@ const Payment = (
 
 export function mapToPaymentProps(
     { checkoutService, checkoutState }: CheckoutContextProps,
-    { capabilities }: PaymentProps,
+    { capabilities, shpEligible }: PaymentProps,
 ): WithCheckoutPaymentProps | null {
     const {
         data: {
@@ -1080,11 +1090,21 @@ export function mapToPaymentProps(
         ? getAddressExtraFields()
         : undefined;
 
+    // SHP: drop the methods this shopper may not use before upstream picks the default.
+    const shpPayment = applyShpPaymentRules(methods, {
+        storeId: config.storeProfile.storeId,
+        customerGroupName: customer.customerGroup?.name,
+        customerEmail: customer.email,
+        billingAddress: getBillingAddress(),
+        shippingAddress: getShippingAddress(),
+        eligible: shpEligible,
+    });
+
     const { defaultMethod, filteredMethods } = getFilteredPaymentMethodsWithDefault({
         checkout,
         checkoutSettings: config.checkoutSettings,
         getPaymentMethod,
-        methods,
+        methods: shpPayment.methods,
         paymentProviderCustomer,
         capabilities,
     });
@@ -1123,6 +1143,7 @@ export function mapToPaymentProps(
         shouldExecuteSpamCheck: checkout.shouldExecuteSpamCheck,
         shouldLocaliseErrorMessages:
             features['PAYMENTS-6799.localise_checkout_payment_error_messages'],
+        shpPaymentNotices: shpPayment.notices,
         submitOrder: checkoutService.submitOrder,
         submitOrderError: getSubmitOrderError(),
         checkoutServiceSubscribe: checkoutService.subscribe,

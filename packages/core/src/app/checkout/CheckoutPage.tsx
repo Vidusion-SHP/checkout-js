@@ -56,6 +56,7 @@ import { type EmbeddedCheckoutStylesheet, isEmbedded } from '../embeddedCheckout
 import { hasSelectedShippingOptions, isUsingMultiShipping } from '../shipping';
 import { ShippingOptionExpiredError } from '../shipping/shippingOption';
 
+import { CheckoutProgress } from './CheckoutProgress';
 import type CheckoutStepStatus from './CheckoutStepStatus';
 import CheckoutStepType from './CheckoutStepType';
 import type CheckoutSupport from './CheckoutSupport';
@@ -787,10 +788,18 @@ const Checkout = ({
         }
     }
 
+    // SHP multi-step: once the open step is known, show the step bar and only the open step plus
+    // one-line recaps of the finished ones. Every step stays mounted, as upstream; upcoming steps
+    // are only hidden with CSS (_shpMultiStep.scss), so checkout behaviour is unchanged.
+    const requiredSteps = stepsRef.current.filter((step) => step.isRequired);
+    const currentStepType = state.activeStepType || state.defaultStepType;
+
     return (
         <div
             className={classNames(
                 'remove-checkout-step-numbers',
+                // SHP: the clean modern look (scss/components/checkout/shpTheme)
+                'shp-checkout',
                 { 'is-embedded': isEmbedded() },
                 { enhancedThemeV1 },
             )}
@@ -812,18 +821,26 @@ const Checkout = ({
                                 onWalletButtonClick={handleWalletButtonClick}
                             />
 
-                            <ol className="checkout-steps">
-                                {stepsRef.current
-                                    .filter((step) => step.isRequired)
-                                    .map((step) =>
-                                        renderStep({
-                                            ...step,
-                                            isActive: state.activeStepType
-                                                ? state.activeStepType === step.type
-                                                : state.defaultStepType === step.type,
-                                            isBusy: isPending,
-                                        }),
-                                    )}
+                            {currentStepType && (
+                                <CheckoutProgress
+                                    activeStepType={currentStepType}
+                                    onEdit={handleEditStep}
+                                    steps={requiredSteps}
+                                />
+                            )}
+
+                            <ol
+                                className={classNames('checkout-steps', {
+                                    'shp-multistep': !!currentStepType,
+                                })}
+                            >
+                                {requiredSteps.map((step) =>
+                                    renderStep({
+                                        ...step,
+                                        isActive: currentStepType === step.type,
+                                        isBusy: isPending,
+                                    }),
+                                )}
                             </ol>
                         </div>
                     </>

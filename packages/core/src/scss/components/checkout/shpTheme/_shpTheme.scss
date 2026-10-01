@@ -1,0 +1,460 @@
+// =============================================================================
+// SHP CLEAN MODERN THEME (Super Hairpieces fork)
+//
+// Scoped to #checkout-page-container.shp-checkout (CheckoutPage.tsx). The ID outranks the
+// theme's optimized-checkout.css, which uses class selectors and loads after these styles,
+// so this look is the same on every store whatever Theme Editor's checkout settings say.
+// The theme still owns the page header (logo bar). To fall back to the theme's styling,
+// remove the `shp-checkout` class in CheckoutPage.tsx.
+// =============================================================================
+
+$shp-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+$shp-ink: #1a1a1a;
+$shp-ink-hover: #3a3a3a;
+$shp-ink-muted: #5f6368;
+$shp-ink-subtle: #8a8d91;
+$shp-line: #e4e5e7;
+$shp-line-strong: #c9cbcf;
+$shp-surface: #fff;
+$shp-surface-soft: #f6f7f8;
+$shp-error: #c5221f;
+$shp-radius: 8px;
+$shp-radius-lg: 12px;
+$shp-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 8px 24px rgba(16, 24, 40, 0.06);
+$shp-focus-ring: 0 0 0 3px rgba(26, 26, 26, 0.14);
+$shp-transition: 150ms ease;
+
+#checkout-page-container.shp-checkout {
+    color: $shp-ink;
+    font-family: $shp-font;
+    -webkit-font-smoothing: antialiased;
+
+    // Typography: every font hook the theme's checkout settings use
+    .optimizedCheckout-headingPrimary,
+    .optimizedCheckout-headingSecondary,
+    .optimizedCheckout-contentPrimary,
+    .optimizedCheckout-contentSecondary,
+    .optimizedCheckout-buttonPrimary,
+    .optimizedCheckout-buttonSecondary,
+    .optimizedCheckout-form-label,
+    .optimizedCheckout-form-input,
+    .optimizedCheckout-form-select,
+    .form-label,
+    .form-input,
+    .form-select,
+    .button,
+    a,
+    button,
+    input,
+    select,
+    textarea {
+        font-family: $shp-font;
+    }
+
+    .optimizedCheckout-headingPrimary,
+    .optimizedCheckout-headingSecondary,
+    .optimizedCheckout-contentPrimary {
+        color: $shp-ink;
+    }
+
+    .optimizedCheckout-contentSecondary {
+        color: $shp-ink-muted;
+    }
+
+    a:not(.button) {
+        color: $shp-ink;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+        transition: color $shp-transition;
+
+        &:hover,
+        &:focus {
+            color: $shp-ink-muted;
+        }
+    }
+
+    // Steps
+    // -------------------------------------------------------------------------
+    .checkout-step {
+        border: 0;
+        padding-top: 0;
+    }
+
+    .checkout-view-header {
+        margin-bottom: 16px;
+    }
+
+    .stepHeader-title {
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+    }
+
+    // The step bar replaces the step counters
+    .stepHeader-counter {
+        display: none;
+    }
+
+    // Finished steps above the open one: one compact, rounded recap each
+    .checkout-steps.shp-multistep > .checkout-step--complete {
+        background-color: $shp-surface;
+        border: 1px solid $shp-line;
+        border-radius: $shp-radius-lg;
+        margin-bottom: 12px;
+        padding: 14px 18px;
+
+        .checkout-view-header {
+            margin-bottom: 0;
+        }
+
+        .stepHeader {
+            align-items: center;
+            padding: 0;
+        }
+
+        .stepHeader-title {
+            color: $shp-ink-muted;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            min-width: 88px;
+            text-transform: uppercase;
+        }
+
+        .stepHeader-body {
+            color: $shp-ink;
+            font-size: 14px;
+        }
+    }
+
+    .checkout-steps.shp-multistep > .checkout-step--current {
+        margin-top: 8px;
+    }
+
+    // Step bar
+    .shp-progress-step {
+        border-bottom-color: $shp-line;
+        border-bottom-width: 2px;
+        color: $shp-ink-subtle;
+        font-size: 13px;
+        font-weight: 500;
+
+        &.is-complete {
+            border-bottom-color: $shp-ink;
+            color: $shp-ink;
+        }
+
+        &.is-current {
+            border-bottom-color: $shp-ink;
+            color: $shp-ink;
+            font-weight: 600;
+        }
+    }
+
+    .shp-progress-number {
+        border-color: currentColor;
+        font-size: 11px;
+        font-weight: 600;
+
+        .is-current & {
+            background-color: $shp-ink;
+            border-color: $shp-ink;
+            color: #fff;
+        }
+    }
+
+    .shp-progress-label--link {
+        text-decoration: none;
+
+        &:hover,
+        &:focus {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+    }
+
+    // Form fields
+    // -------------------------------------------------------------------------
+    .form-label,
+    .optimizedCheckout-form-label {
+        color: $shp-ink;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .form-input,
+    .form-select,
+    .optimizedCheckout-form-input,
+    .optimizedCheckout-form-select {
+        background-color: $shp-surface;
+        border: 1px solid $shp-line-strong;
+        border-radius: $shp-radius;
+        box-shadow: none;
+        color: $shp-ink;
+        font-size: 15px;
+        min-height: 48px;
+        transition: border-color $shp-transition, box-shadow $shp-transition;
+
+        &:hover {
+            border-color: $shp-ink-subtle;
+        }
+
+        &:focus {
+            border-color: $shp-ink;
+            box-shadow: $shp-focus-ring;
+            outline: 0;
+        }
+
+        &::placeholder {
+            color: $shp-ink-subtle;
+        }
+    }
+
+    // Fixed-label fields only: floating-label fields keep upstream's padding for the label
+    .form-input:not(.floating-input),
+    .form-select:not(.floating-select) {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    textarea.form-input {
+        min-height: 96px;
+        padding-bottom: 12px;
+        padding-top: 12px;
+    }
+
+    .form-field--error .form-input,
+    .form-field--error .form-select {
+        border-color: $shp-error;
+    }
+
+    .form-field-error,
+    .form-inlineMessage {
+        color: $shp-error;
+        font-size: 13px;
+    }
+
+    .form-checkbox:checked + .form-label::before,
+    .form-radio:checked + .form-label::before {
+        background-color: $shp-ink;
+        border-color: $shp-ink;
+    }
+
+    // Buttons
+    // -------------------------------------------------------------------------
+    .button {
+        border-radius: $shp-radius;
+        font-weight: 600;
+        letter-spacing: 0;
+        text-transform: none;
+        transition: background-color $shp-transition, border-color $shp-transition,
+            color $shp-transition;
+    }
+
+    .button--primary,
+    .button--action,
+    .optimizedCheckout-buttonPrimary {
+        background-color: $shp-ink;
+        border-color: $shp-ink;
+        color: #fff;
+        min-height: 48px;
+
+        &:hover:not([disabled]),
+        &:focus:not([disabled]) {
+            background-color: $shp-ink-hover;
+            border-color: $shp-ink-hover;
+            color: #fff;
+        }
+
+        &:focus-visible {
+            box-shadow: $shp-focus-ring;
+        }
+
+        &[disabled] {
+            opacity: 0.45;
+        }
+    }
+
+    .button--tertiary,
+    .optimizedCheckout-buttonSecondary {
+        background-color: transparent;
+        border: 1px solid $shp-line-strong;
+        color: $shp-ink;
+
+        &:hover:not([disabled]),
+        &:focus:not([disabled]) {
+            background-color: transparent;
+            border-color: $shp-ink;
+            color: $shp-ink;
+        }
+    }
+
+    .button--tiny {
+        font-size: 13px;
+        min-height: 32px;
+        padding: 0 12px;
+    }
+
+    // Primary actions span the form (Sign in, Continue, Place order); the guest email
+    // "Continue" stays beside its field
+    .form-actions .button--primary:not(.customerEmail-button),
+    .form-actions .button--action {
+        width: 100%;
+    }
+
+    // Customer step: tighter sign-in and account links
+    .customer-login-link,
+    .customerView-actions {
+        font-size: 14px;
+        margin-top: 12px;
+    }
+
+    // Shipping options and payment methods
+    // -------------------------------------------------------------------------
+    .form-checklist {
+        background-color: $shp-surface;
+        border: 1px solid $shp-line;
+        border-radius: $shp-radius-lg;
+        overflow: hidden;
+    }
+
+    .form-checklist-item,
+    .optimizedCheckout-form-checklist-item {
+        background-color: $shp-surface;
+        border: 0;
+        border-bottom: 1px solid $shp-line;
+        transition: background-color $shp-transition;
+
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    .form-checklist-item--selected,
+    .optimizedCheckout-form-checklist-item--selected {
+        background-color: $shp-surface-soft;
+    }
+
+    .form-checklist-checkbox:checked ~ .form-label::before {
+        border-color: $shp-ink;
+    }
+
+    .form-checklist-checkbox:checked ~ .form-label::after {
+        background-color: $shp-ink;
+    }
+
+    .form-checklist-checkbox:focus ~ .form-label {
+        box-shadow: none;
+    }
+
+    .alertBox {
+        border-radius: $shp-radius;
+    }
+
+    // Order summary (desktop card)
+    // -------------------------------------------------------------------------
+    .cart,
+    .optimizedCheckout-orderSummary {
+        background-color: $shp-surface;
+        border: 1px solid $shp-line;
+        border-radius: $shp-radius-lg;
+        box-shadow: $shp-shadow;
+    }
+
+    .cart-header {
+        border-bottom: 1px solid $shp-line;
+        padding: 18px 24px;
+    }
+
+    .cart-title {
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    .cart-section {
+        border-bottom: 1px solid $shp-line;
+        padding: 16px 24px;
+
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    .product-figure img {
+        border: 1px solid $shp-line;
+        border-radius: $shp-radius;
+    }
+
+    .cart-priceItem-label {
+        color: $shp-ink-muted;
+    }
+
+    .cart-priceItem--total {
+        .cart-priceItem-label {
+            color: $shp-ink;
+            font-weight: 600;
+        }
+
+        .cart-priceItem-value {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+        }
+    }
+
+    // Order summary (phone): the floating bar that opens the full summary
+    .cartDrawer {
+        border: 1px solid $shp-line;
+        border-radius: $shp-radius-lg;
+        box-shadow: $shp-shadow;
+        padding: 12px 16px;
+    }
+
+    .cartDrawer-imageWrapper img {
+        border-radius: $shp-radius;
+    }
+
+    .cartDrawer-total {
+        font-weight: 700;
+    }
+
+    // Layout: two columns with a summary that stays in view while you scroll
+    // -------------------------------------------------------------------------
+    @include breakpoint("large") {
+        .layout {
+            align-items: start;
+            column-gap: 56px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(340px, 400px);
+            margin: 0 auto;
+            max-width: 1160px;
+
+            // The float clearfix would otherwise become grid cells
+            &::before,
+            &::after {
+                display: none;
+            }
+        }
+
+        .layout-main,
+        .layout-cart {
+            float: none;
+            padding-left: 0;
+            padding-right: 0;
+            width: auto;
+        }
+
+        .layout-cart {
+            position: sticky;
+            top: 24px;
+        }
+
+        .checkout-steps,
+        .shp-progress {
+            padding-right: 0;
+        }
+    }
+}

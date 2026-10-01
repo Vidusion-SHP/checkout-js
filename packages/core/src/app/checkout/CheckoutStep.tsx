@@ -169,6 +169,8 @@ const CheckoutStep = ({
             className={classNames('checkout-step', 'optimizedCheckout-checkoutStep', {
                 [`checkout-step--${type}`]: !!type,
                 'checkout-step--current': isActive,
+                // SHP multi-step: finished steps stay visible as one-line recaps, upcoming ones are hidden (_shpMultiStep.scss)
+                'checkout-step--complete': isComplete && !isActive,
             })}
             ref={containerRef}
         >

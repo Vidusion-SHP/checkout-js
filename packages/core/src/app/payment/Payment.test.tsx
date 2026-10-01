@@ -1175,7 +1175,8 @@ describe('Payment step', () => {
 
         render(<CheckoutTest {...defaultProps} />);
 
-        expect(await screen.findByText('Payment')).toBeInTheDocument();
+        // SHP: the step bar also says "Payment", so look for the step heading itself
+        expect(await screen.findByRole('heading', { name: 'Payment' })).toBeInTheDocument();
         expect(screen.queryByRole('radio')).not.toBeInTheDocument();
     });
 
